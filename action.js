@@ -20,6 +20,13 @@ if (screen.width < 400) {
     fish4start = 1800;
 }
 
+const fishConfigs = [
+    { element: fish1, baseTop: 5, baseLeft: 5, startOffset: () => fish1start, verticalSpeed: 0.35, horizontalSpeed: 0.35 },
+    { element: fish2, baseTop: 20, baseLeft: 20, startOffset: () => fish2start, verticalSpeed: 0.3, horizontalSpeed: 0.3 },
+    { element: fish3, baseTop: 35, baseLeft: 35, startOffset: () => fish3start, verticalSpeed: 0.25, horizontalSpeed: 0.25 },
+    { element: fish4, baseTop: 50, baseLeft: 50, startOffset: () => fish4start, verticalSpeed: 0.2, horizontalSpeed: 0.2 }
+];
+
 
 
 window.addEventListener('scroll', function () {
@@ -51,16 +58,14 @@ window.addEventListener('scroll', function () {
         splash.style.top = 20 + value * -0.3 + 'px';
     }
 
-    //Move fishes from bottom to top
-    const moveFishUpwards = (fish, basePosition, startOffset, speed) => {
-        const progress = Math.max(0, value - startOffset);
-        fish.style.top = `calc(${basePosition}% - ${progress * speed}px)`;
+    //Move fishes diagonally from top-left to bottom-right
+    const moveFishDiagonally = (config) => {
+        const progress = Math.max(0, value - config.startOffset());
+        config.element.style.top = `calc(${config.baseTop}% + ${progress * config.verticalSpeed}px)`;
+        config.element.style.left = `calc(${config.baseLeft}% + ${progress * config.horizontalSpeed}px)`;
     };
 
-    moveFishUpwards(fish1, 80, fish1start, 0.35);
-    moveFishUpwards(fish2, 90, fish2start, 0.3);
-    moveFishUpwards(fish3, 100, fish3start, 0.25);
-    moveFishUpwards(fish4, 110, fish4start, 0.2);
+    fishConfigs.forEach(moveFishDiagonally);
 })
 
 
