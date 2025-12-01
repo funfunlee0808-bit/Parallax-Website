@@ -1,10 +1,11 @@
 // Select the class bubble
 time = document.getElementsByClassName('bubbles')[0];
 
-// padding values for desktop
-var fish2move = 100;
-var fish3move = 900;
-var fish4move = 1200;
+// starting scroll offsets for desktop
+var fish1start = 100;
+var fish2start = 300;
+var fish3start = 700;
+var fish4start = 1100;
 
 if (screen.width < 400) {
 
@@ -12,11 +13,19 @@ if (screen.width < 400) {
     time.style.setProperty('--transform-duration', '15s')
     time.style.setProperty('--transform-y', '-700vh')
 
-    // padding values for mobile
-    fish2move = 1680;
-    fish3move = 3000;
-    fish4move = 4300;
+    // start offsets for mobile
+    fish1start = 250;
+    fish2start = 600;
+    fish3start = 1200;
+    fish4start = 1800;
 }
+
+const fishConfigs = [
+    { element: fish1, baseTop: 5, baseLeft: 5, startOffset: () => fish1start, verticalSpeed: 0.35, horizontalSpeed: 0.35 },
+    { element: fish2, baseTop: 20, baseLeft: 20, startOffset: () => fish2start, verticalSpeed: 0.3, horizontalSpeed: 0.3 },
+    { element: fish3, baseTop: 35, baseLeft: 35, startOffset: () => fish3start, verticalSpeed: 0.25, horizontalSpeed: 0.25 },
+    { element: fish4, baseTop: 50, baseLeft: 50, startOffset: () => fish4start, verticalSpeed: 0.2, horizontalSpeed: 0.2 }
+];
 
 
 
@@ -49,11 +58,14 @@ window.addEventListener('scroll', function () {
         splash.style.top = 20 + value * -0.3 + 'px';
     }
 
-    //Move fishes horizontally
-    fish1.style.right = (value - 100) * 1 + 'px';
-    fish2.style.left = (value - fish2move) * 1 + 'px';
-    fish3.style.right = (value - fish3move) * 1 + 'px';
-    fish4.style.left = (value - fish4move) * 1 + 'px';
+    //Move fishes diagonally from top-left to bottom-right
+    const moveFishDiagonally = (config) => {
+        const progress = Math.max(0, value - config.startOffset());
+        config.element.style.top = `calc(${config.baseTop}% + ${progress * config.verticalSpeed}px)`;
+        config.element.style.left = `calc(${config.baseLeft}% + ${progress * config.horizontalSpeed}px)`;
+    };
+
+    fishConfigs.forEach(moveFishDiagonally);
 })
 
 
